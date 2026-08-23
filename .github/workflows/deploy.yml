@@ -177,7 +177,7 @@ jobs:
   # =========================
   # FRONTEND DEPLOYMENT
   # =========================
- deploy-frontend:
+  deploy-frontend:
   needs: deploy-backend
   runs-on: ubuntu-latest
 
