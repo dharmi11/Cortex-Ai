@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.get("/", (req, res) => {
     res.json({
-        message: "Hello from Chat"
+        message: "Hello from Chat V4"
     })
 })
 

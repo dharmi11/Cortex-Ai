@@ -36,7 +36,7 @@ app.use("/api/user" , protect , getCurrentUser);
 
 
 app.get("/" , (req,res)=>{
-    res.send("gateway is working on Update V3")
+    res.send("gateway is working on Update V4")
 })
 
 app.listen(port , ()=>{
