@@ -11,7 +11,7 @@ import Artifact from '../components/Artifact';
 import Nav from '../components/Nav';
 
 
-const home = () => {
+const Home = () => {
 
     const { userData } = useSelector(state => state.user)
     const [isOpen, setIsOpen] = useState(true);
@@ -85,4 +85,4 @@ const home = () => {
     );
 }
 
-export default home
+export default Home
