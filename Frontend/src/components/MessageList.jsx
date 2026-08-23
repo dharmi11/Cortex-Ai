@@ -34,7 +34,7 @@ const MessageList = () => {
             </div>
 
             <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-2">
-              Hello,{' '}
+              Hello - {' '}
               <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
                 {userData?.name || 'Guest'}
               </span>{' '}
