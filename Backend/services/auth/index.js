@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.get("/", (req, res) => {
     res.json({
-        message: "Hello from from Auth"
+        message: "Hello from from Auth v1"
     })
 })
 
