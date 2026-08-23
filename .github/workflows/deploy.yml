@@ -41,7 +41,7 @@ jobs:
       - name: Build Gateway
         run: |
           docker build \
-            -f Backend/gateway/Dockerfile \
+            -f Backend/gateway/DockerFile \
             -t gateway:latest \
             Backend
 
@@ -61,7 +61,7 @@ jobs:
       - name: Build Auth
         run: |
           docker build \
-            -f Backend/services/auth/Dockerfile \
+            -f Backend/services/auth/DockerFile \
             -t auth-service:latest \
             Backend
 
@@ -81,7 +81,7 @@ jobs:
       - name: Build Chat
         run: |
           docker build \
-            -f Backend/services/chat/Dockerfile \
+            -f Backend/services/chat/DockerFile \
             -t chat-services:latest \
             Backend
 
@@ -101,7 +101,7 @@ jobs:
       - name: Build Agent
         run: |
           docker build \
-            -f Backend/services/agent/Dockerfile \
+            -f Backend/services/agent/DockerFile \
             -t agent-services:latest \
             Backend
 
@@ -121,7 +121,7 @@ jobs:
       - name: Build Billing
         run: |
           docker build \
-            -f Backend/services/billing/Dockerfile \
+            -f Backend/services/billing/DockerFile \
             -t billing-services:latest \
             Backend
 
