@@ -6,8 +6,8 @@ on:
       - main
 
 env:
-  AWS_REGION: ${{secrets.AWS_REGION}}
-  AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
 
 jobs:
 
@@ -16,148 +16,162 @@ jobs:
   # =========================
   deploy-backend:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # =========================
+      # AWS
+      # =========================
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
-          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          aws-region: ${{ env.AWS_REGION }} 
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to  ECR
+      - name: Login to ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      # =========================
+      # GATEWAY
+      # =========================
       - name: Build Gateway
         run: |
           docker build \
-           -f backend/gateway/Dockerfile \
-           -f gateway backend 
+            -f Backend/gateway/Dockerfile \
+            -t gateway:latest \
+            Backend
 
-      - name: tag Gateway
+      - name: Tag Gateway
         run: |
-            docker tag gateway:latest \
-            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/gateway:latest
+          docker tag gateway:latest \
+            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/gateway:latest
 
-      - name: push Gateway
+      - name: Push Gateway
         run: |
-            docker push \
-            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/gateway:latest
+          docker push \
+            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/gateway:latest
 
-
-
-      - name: Build Auth 
-        run: |
-          docker build \
-           -f backend/services/auth/Dockerfile \
-           -f auth-service backend 
-
-      - name: tag Auth
-        run: |
-            docker tag auth-service:latest \
-            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/auth-service:latest
-
-      - name: push Auth
-        run: |
-            docker push \
-            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/auth-service:latest
-            
-
-          
-      - name: Build chat
+      # =========================
+      # AUTH
+      # =========================
+      - name: Build Auth
         run: |
           docker build \
-           -f backend/services/chat/Dockerfile \
-           -f chat-services backend 
+            -f Backend/services/auth/Dockerfile \
+            -t auth-service:latest \
+            Backend
 
-      - name: tag chat
+      - name: Tag Auth
         run: |
-            docker tag chat-services:latest \
-            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/chat-services:latest
+          docker tag auth-service:latest \
+            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/auth-service:latest
 
-      - name: push chat
+      - name: Push Auth
         run: |
-            docker push \
-            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/chat-services:latest    
+          docker push \
+            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/auth-service:latest
 
-
-
-      - name: Build agent
-        run: |
-          docker build \
-           -f backend/services/agent/Dockerfile \
-           -f agent-services backend 
-
-      - name: tag agent
-        run: |
-            docker tag agent-services:latest \
-            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/agent-services:latest
-
-      - name: push agent
-        run: |
-            docker push \
-            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/agent-services:latest    
-
-
-      - name: Build billing
+      # =========================
+      # CHAT
+      # =========================
+      - name: Build Chat
         run: |
           docker build \
-           -f backend/services/billing/Dockerfile \
-           -f billing-services backend 
+            -f Backend/services/chat/Dockerfile \
+            -t chat-services:latest \
+            Backend
 
-      - name: tag billing
+      - name: Tag Chat
         run: |
-            docker tag billing-services:latest \
-            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/billing-services:latest
+          docker tag chat-services:latest \
+            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/chat-services:latest
 
-      - name: push billing
+      - name: Push Chat
         run: |
-            docker push \
-            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/billing-services:latest  
+          docker push \
+            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/chat-services:latest
 
+      # =========================
+      # AGENT
+      # =========================
+      - name: Build Agent
+        run: |
+          docker build \
+            -f Backend/services/agent/Dockerfile \
+            -t agent-services:latest \
+            Backend
 
+      - name: Tag Agent
+        run: |
+          docker tag agent-services:latest \
+            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/agent-services:latest
 
-      - name: deploy gateway
+      - name: Push Agent
+        run: |
+          docker push \
+            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/agent-services:latest
+
+      # =========================
+      # BILLING
+      # =========================
+      - name: Build Billing
+        run: |
+          docker build \
+            -f Backend/services/billing/Dockerfile \
+            -t billing-services:latest \
+            Backend
+
+      - name: Tag Billing
+        run: |
+          docker tag billing-services:latest \
+            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/billing-services:latest
+
+      - name: Push Billing
+        run: |
+          docker push \
+            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/billing-services:latest
+
+      # =========================
+      # ECS DEPLOYMENT
+      # =========================
+      - name: Deploy Gateway
         run: |
           aws ecs update-service \
-          --cluster ${{secrets.ECS_CLUSTER}} \
-          --service ${{secrets.GATEWAY_SERVICE}} \
-          --force-new-deployment
+            --cluster ${{ secrets.ECS_CLUSTER }} \
+            --service ${{ secrets.GATEWAY_SERVICE }} \
+            --force-new-deployment
 
-      - name: deploy auth
+      - name: Deploy Auth
         run: |
           aws ecs update-service \
-          --cluster ${{secrets.ECS_CLUSTER}} \
-          --service ${{secrets.AUTH_SERVICE}} \
-          --force-new-deployment
+            --cluster ${{ secrets.ECS_CLUSTER }} \
+            --service ${{ secrets.AUTH_SERVICE }} \
+            --force-new-deployment
 
-      - name: deploy chat
+      - name: Deploy Chat
         run: |
           aws ecs update-service \
-          --cluster ${{secrets.ECS_CLUSTER}} \
-          --service ${{secrets.CHAT_SERVICE}} \
-          --force-new-deployment
+            --cluster ${{ secrets.ECS_CLUSTER }} \
+            --service ${{ secrets.CHAT_SERVICE }} \
+            --force-new-deployment
 
-      - name: deploy agent
+      - name: Deploy Agent
         run: |
           aws ecs update-service \
-          --cluster ${{secrets.ECS_CLUSTER}} \
-          --service ${{secrets.AGENT_SERVICE}} \
-          --force-new-deployment
+            --cluster ${{ secrets.ECS_CLUSTER }} \
+            --service ${{ secrets.AGENT_SERVICE }} \
+            --force-new-deployment
 
-      - name: deploy billing
+      - name: Deploy Billing
         run: |
           aws ecs update-service \
-          --cluster ${{secrets.ECS_CLUSTER}} \
-          --service ${{secrets.BILLING_SERVICE}} \
-          --force-new-deployment
-
-
-
-
+            --cluster ${{ secrets.ECS_CLUSTER }} \
+            --service ${{ secrets.BILLING_SERVICE }} \
+            --force-new-deployment
 
 
   # =========================
@@ -166,33 +180,33 @@ jobs:
   deploy-frontend:
     needs: deploy-backend
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: build frontend
-        run : |
-           cd frontend
-           npm install
-           npm run build
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
-          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          aws-region: ${{env.AWS_REGION}} 
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: upload to s3  
+      - name: Upload to S3
         run: |
           aws s3 sync \
-          frontend/dist \
-          s3://${{secrets.S3_BUCKET}} \
-          --delete
+            frontend/dist \
+            s3://${{ secrets.S3_BUCKET }} \
+            --delete
 
-      - name: invalidate cloudfront
+      - name: Invalidate CloudFront
         run: |
-           aws cloudfront create-invalidation \
-           --distribution-id \
-           ${{secrets.CLOUDFRONT_DISTRIBUTION_ID}} \
-           --paths "/*"
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
