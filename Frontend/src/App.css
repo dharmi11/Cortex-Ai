@@ -1,0 +1,86 @@
+/* index.css */
+
+/* Modal card – subtle scale + fade animation */
+.modal-card {
+  animation: modalFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-shadow:
+    0 30px 80px -20px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 0 40px -10px rgba(99, 102, 241, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glow ring behind the card (rotating) */
+.modal-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0%,
+    rgba(99, 102, 241, 0.04) 25%,
+    transparent 50%,
+    rgba(139, 92, 246, 0.04) 75%,
+    transparent 100%
+  );
+  animation: rotateGlow 20s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure all content sits above the glow */
+.modal-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Google button – extra hover glow */
+.btn-google {
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+.btn-google::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 40%, transparent 60%, rgba(255, 255, 255, 0.05));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-google:hover::after {
+  opacity: 1;
+}
+
+/* Animations */
+@keyframes modalFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.94) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes rotateGlow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
