@@ -36,7 +36,7 @@ app.use("/api/user" , protect , getCurrentUser);
 
 
 app.get("/" , (req,res)=>{
-    res.send("gateway is working ")
+    res.send("gateway is working afte Ci/Cd pipeline v1 ")
 })
 
 app.listen(port , ()=>{

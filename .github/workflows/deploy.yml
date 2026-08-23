@@ -6,8 +6,8 @@ on:
       - main
 
 env:
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  AWS_REGION: ${{secrets.AWS_REGION}}
+  AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
 
 jobs:
 
@@ -23,8 +23,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
           aws-region: ${{ env.AWS_REGION }} 
 
       - name: Login to  ECR
@@ -40,12 +40,12 @@ jobs:
       - name: tag Gateway
         run: |
             docker tag gateway:latest \
-            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/gateway:latest
+            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/gateway:latest
 
       - name: push Gateway
         run: |
             docker push \
-            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/gateway:latest
+            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/gateway:latest
 
 
 
@@ -58,12 +58,12 @@ jobs:
       - name: tag Auth
         run: |
             docker tag auth-service:latest \
-            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/auth-service:latest
+            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/auth-service:latest
 
       - name: push Auth
         run: |
             docker push \
-            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/auth-service:latest
+            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/auth-service:latest
             
 
           
@@ -76,12 +76,12 @@ jobs:
       - name: tag chat
         run: |
             docker tag chat-services:latest \
-            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/chat-services:latest
+            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/chat-services:latest
 
       - name: push chat
         run: |
             docker push \
-            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/chat-services:latest    
+            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/chat-services:latest    
 
 
 
@@ -94,12 +94,12 @@ jobs:
       - name: tag agent
         run: |
             docker tag agent-services:latest \
-            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/agent-services:latest
+            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/agent-services:latest
 
       - name: push agent
         run: |
             docker push \
-            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/agent-services:latest    
+            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/agent-services:latest    
 
 
       - name: Build billing
@@ -111,12 +111,12 @@ jobs:
       - name: tag billing
         run: |
             docker tag billing-services:latest \
-            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/billing-services:latest
+            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/billing-services:latest
 
       - name: push billing
         run: |
             docker push \
-            ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/billing-services:latest  
+            ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/billing-services:latest  
 
 
 
@@ -179,16 +179,16 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }} 
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-region: ${{env.AWS_REGION}} 
 
       - name: upload to s3  
         run: |
           aws s3 sync \
           frontend/dist \
-          s3://cortex-ai-dharmi-314567759945-ap-south-1-an \
-          -- delete
+          s3://${{secrets.S3_BUCKET}} \
+          --delete
 
       - name: invalidate cloudfront
         run: |
